@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+/// Challenge 2:
+extension Shape {
+    func fill(using offset: CGSize) -> some View {
+        if offset.width > 0 {
+            return self.fill(.green)
+        } else if offset.width < 0 {
+            return self.fill(.red)
+        } else {
+            return self.fill(.white)
+        }
+    }
+}
+
 struct CardView: View {
     
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
@@ -20,6 +33,8 @@ struct CardView: View {
     @State private var offset = CGSize.zero
     
     @State private var feedback = UINotificationFeedbackGenerator()
+    
+    @State private var wasGuessed = false
     
     var body: some View {
         ZStack {
@@ -35,7 +50,8 @@ struct CardView: View {
                     ? nil
                     : RoundedRectangle(cornerRadius: 25, style: .continuous)
                         /// Challenge 2:
-                        .fill(offset.width > 0 ? .green : offset.width < 0 ? .red : .white)
+//                        .fill(offset.width > 0 ? .green : offset.width < 0 ? .red : .white)
+                        .fill(using: offset)
                 )
                 .shadow(radius: 10)
             
@@ -72,9 +88,12 @@ struct CardView: View {
                 }
                 .onEnded { _ in
                     if abs(offset.width) > 100 {
+                        /// Challenge 3:
                         if offset.width > 0 {
+                            wasGuessed = true
                             feedback.notificationOccurred(.success)
                         } else {
+                            wasGuessed = false
                             feedback.notificationOccurred(.error)
                         }
                         

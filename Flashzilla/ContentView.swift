@@ -45,8 +45,9 @@ struct ContentView: View {
                     .clipShape(Capsule())
                 
                 ZStack {
-                    ForEach(0..<cards.count, id: \.self) { index in
-                        CardView(card: cards[index]) {
+                    /// Challenge 3:
+                    ForEach(cards) { card in
+                        CardView(card: card) {
                             withAnimation {
                                 removeCard(at: index)
                             }
@@ -146,10 +147,12 @@ struct ContentView: View {
         .onAppear(perform: resetCards)
     }
     
+    /// Challenge 3:
     func removeCard(at index: Int) {
         guard index >= 0 else { return }
-        
-        cards.remove(at: index)
+            
+//        cards.remove(at: index)
+        cards.removeAll(where: { $0.id == cards[index].id })
         
         if cards.isEmpty {
             isActive = false
