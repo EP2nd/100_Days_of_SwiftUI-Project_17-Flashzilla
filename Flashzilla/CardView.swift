@@ -27,17 +27,19 @@ struct CardView: View {
     
     let card: Card
     
-    var removal: (() -> Void)? = nil
-    
     @State private var isShowingAnswer = false
+    
     @State private var offset = CGSize.zero
     
     @State private var feedback = UINotificationFeedbackGenerator()
     
-    @State private var wasGuessed = false
+    /// Challenge 3:
+    var removal: ((Bool) -> Void)? = nil
     
     var body: some View {
+        
         ZStack {
+            
             RoundedRectangle(cornerRadius: 25, style: .continuous)
                 .fill(
                     differentiateWithoutColor
@@ -90,14 +92,13 @@ struct CardView: View {
                     if abs(offset.width) > 100 {
                         /// Challenge 3:
                         if offset.width > 0 {
-                            wasGuessed = true
                             feedback.notificationOccurred(.success)
+                            removal?(false)
                         } else {
-                            wasGuessed = false
                             feedback.notificationOccurred(.error)
+                            removal?(true)
+                            offset = .zero
                         }
-                        
-                        removal?()
                     } else {
                         offset = .zero
                     }

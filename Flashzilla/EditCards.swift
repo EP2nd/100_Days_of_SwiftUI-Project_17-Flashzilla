@@ -12,12 +12,16 @@ struct EditCards: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var cards = [Card]()
+    
     @State private var newPrompt = ""
     @State private var newAnswer = ""
     
     var body: some View {
+        
         NavigationView {
+            
             List {
+                
                 Section("Add new card:") {
                     TextField("Prompt", text: $newPrompt)
                     TextField("Answer", text: $newAnswer)
@@ -43,10 +47,6 @@ struct EditCards: View {
             .listStyle(.grouped)
             .onAppear(perform: loadData)
         }
-    }
-    
-    func done() {
-        dismiss()
     }
     
     func loadData() {
@@ -80,6 +80,10 @@ struct EditCards: View {
     func removeCards(at offsets: IndexSet) {
         cards.remove(atOffsets: offsets)
         saveData()
+    }
+    
+    func done() {
+        dismiss()
     }
 }
 

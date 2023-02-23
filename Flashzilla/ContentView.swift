@@ -30,12 +30,15 @@ struct ContentView: View {
     @State private var showingEditScreen = false
     
     var body: some View {
+        
         ZStack {
+            
             Image(decorative: "background")
                 .resizable()
                 .ignoresSafeArea()
             
             VStack {
+                
                 Text("Time: \(timeRemaining)")
                     .font(.largeTitle)
                     .foregroundColor(.white)
@@ -47,9 +50,11 @@ struct ContentView: View {
                 ZStack {
                     /// Challenge 3:
                     ForEach(cards) { card in
-                        CardView(card: card) {
+                        let index = indexOf(card: card)!
+                        
+                        CardView(card: card) { needsRepetition in
                             withAnimation {
-                                removeCard(at: index)
+                                removeCard(at: index, needsRepetition: needsRepetition)
                             }
                         }
                             .stacked(at: index, in: cards.count)
@@ -69,7 +74,9 @@ struct ContentView: View {
             }
             
             VStack {
+                
                 HStack {
+                    
                     Spacer()
                     
                     Button {
@@ -89,13 +96,17 @@ struct ContentView: View {
             .padding()
             
             if differentiateWithoutColor || voiceOverEnabled {
+                
                 VStack {
+                    
                     Spacer()
                     
                     HStack {
+                        
                         Button {
                             withAnimation {
-                                removeCard(at: cards.count - 1)
+                                /// Challenge 3:
+                                removeCard(at: cards.count - 1, needsRepetition: true)
                             }
                         } label: {
                             Image(systemName: "xmark.circle")
@@ -110,7 +121,8 @@ struct ContentView: View {
                         
                         Button {
                             withAnimation {
-                                removeCard(at: cards.count - 1)
+                                /// Challenge 3:
+                                removeCard(at: cards.count - 1, needsRepetition: false)
                             }
                         } label: {
                             Image(systemName: "checkmark.circle")
@@ -148,21 +160,23 @@ struct ContentView: View {
     }
     
     /// Challenge 3:
-    func removeCard(at index: Int) {
+    func indexOf(card: Card) -> Int? {
+        return cards.firstIndex(where: { $0 == card })
+    }
+    
+    /// Challenge 3:
+    func removeCard(at index: Int, needsRepetition: Bool) {
         guard index >= 0 else { return }
-            
-//        cards.remove(at: index)
-        cards.removeAll(where: { $0.id == cards[index].id })
+        
+        if needsRepetition {
+            cards.move(fromOffsets: IndexSet(integer: index), toOffset: 0)
+        } else {
+            cards.remove(at: index)
+        }
         
         if cards.isEmpty {
             isActive = false
         }
-    }
-    
-    func resetCards() {
-        timeRemaining = 100
-        isActive = true
-        loadData()
     }
     
     func loadData() {
@@ -171,6 +185,12 @@ struct ContentView: View {
                 cards = decoded
             }
         }
+    }
+    
+    func resetCards() {
+        timeRemaining = 100
+        isActive = true
+        loadData()
     }
 }
 
