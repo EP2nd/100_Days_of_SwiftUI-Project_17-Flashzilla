@@ -49,17 +49,15 @@ struct ContentView: View {
                 
                 ZStack {
                     /// Challenge 3:
-                    ForEach(cards) { card in
-                        let index = indexOf(card: card)!
-                        
-                        CardView(card: card) { needsRepetition in
+                    ForEach(Array(cards.enumerated()), id: \.element) { item in
+                        CardView(card: item.element) { needsRepetition in
                             withAnimation {
-                                removeCard(at: index, needsRepetition: needsRepetition)
+                                removeCard(at: item.offset, needsRepetition: needsRepetition)
                             }
                         }
-                            .stacked(at: index, in: cards.count)
-                            .allowsHitTesting(index == cards.count - 1)
-                            .accessibilityHidden(index < cards.count - 1)
+                        .stacked(at: item.offset, in: cards.count)
+                        .allowsHitTesting(item.offset == cards.count - 1)
+                        .accessibilityHidden(item.offset < cards.count - 1)
                     }
                 }
                 .allowsHitTesting(timeRemaining > 0)
@@ -159,10 +157,10 @@ struct ContentView: View {
         .onAppear(perform: resetCards)
     }
     
-    /// Challenge 3:
-    func indexOf(card: Card) -> Int? {
-        return cards.firstIndex(where: { $0 == card })
-    }
+//    /// Challenge 3:
+//    func indexOf(card: Card) -> Int? {
+//        return cards.firstIndex(where: { $0 == card })
+//    }
     
     /// Challenge 3:
     func removeCard(at index: Int, needsRepetition: Bool) {

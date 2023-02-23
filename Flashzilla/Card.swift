@@ -8,7 +8,7 @@
 import Foundation
 
 /// Challenge 3:
-struct Card: Codable, Identifiable, Equatable {
+struct Card: Codable, Identifiable, /*Equatable*/ Hashable {
     
     var id = UUID()
     let prompt: String
