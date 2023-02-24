@@ -11,7 +11,8 @@ struct EditCards: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @State private var cards = [Card]()
+    /// Bonus challenges:
+    @State private var cards = DataManager.load()
     
     @State private var newPrompt = ""
     @State private var newAnswer = ""
@@ -45,21 +46,7 @@ struct EditCards: View {
                 Button("Done", action: done)
             }
             .listStyle(.grouped)
-            .onAppear(perform: loadData)
-        }
-    }
-    
-    func loadData() {
-        if let data = UserDefaults.standard.data(forKey: "Cards") {
-            if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-                cards = decoded
-            }
-        }
-    }
-    
-    func saveData() {
-        if let data = try? JSONEncoder().encode(cards) {
-            UserDefaults.standard.set(data, forKey: "Cards")
+//            .onAppear(perform: loadData())
         }
     }
     
@@ -71,7 +58,8 @@ struct EditCards: View {
         
         let card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
         cards.insert(card, at: 0)
-        saveData()
+        /// Bonus challenges:
+        DataManager.save(data: cards)
         /// Challenge 1:
         newPrompt = ""
         newAnswer = ""
@@ -79,7 +67,8 @@ struct EditCards: View {
     
     func removeCards(at offsets: IndexSet) {
         cards.remove(atOffsets: offsets)
-        saveData()
+        /// Bonus challenges:
+        DataManager.save(data: cards)
     }
     
     func done() {

@@ -22,7 +22,8 @@ struct ContentView: View {
     
     @State private var isActive = true
     
-    @State private var cards = [Card]()
+    /// Bonus challenges:
+    @State private var cards = DataManager.load()
     
     @State private var timeRemaining = 100
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -177,18 +178,11 @@ struct ContentView: View {
         }
     }
     
-    func loadData() {
-        if let data = UserDefaults.standard.data(forKey: "Cards") {
-            if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-                cards = decoded
-            }
-        }
-    }
-    
     func resetCards() {
         timeRemaining = 100
         isActive = true
-        loadData()
+        /// Bonus challenges:
+        cards = DataManager.load()
     }
 }
 
